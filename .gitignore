@@ -4,3 +4,13 @@
 /.gradle/
 /src/main/cpp/java_entt/build/
 /src/main/cpp/java_entt/.cache/
+/src/main/cpp/java_entt/DartConfiguration.tcl
+/src/main/cpp/java_entt/Makefile
+/src/main/cpp/java_entt/CTestTestfile.cmake
+/src/main/cpp/java_entt/CPackSourceConfig.cmake
+/src/main/cpp/java_entt/CPackConfig.cmake
+/src/main/cpp/java_entt/CMakeCache.txt
+/src/main/cpp/java_entt/cmake_install.cmake
+/src/main/cpp/java_entt/Testing/
+/src/main/cpp/java_entt/CMakeFiles/
+!/src/main/cpp/java_entt/build/libjava_entt_registry.so

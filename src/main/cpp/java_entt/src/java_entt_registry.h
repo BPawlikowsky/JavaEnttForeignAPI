@@ -18,25 +18,19 @@ struct velocity {
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*
- * Class:     org_jnitest_Registry
- * Method:    init
- * Signature: ()V
- */
+
+JNIEXPORT void JNICALL printAllEntities();
+
 JNIEXPORT void JNICALL init(void);
 
-/*
- * Class:     org_jnitest_Registry
- * Method:    create
- * Signature: ()V
- */
-JNIEXPORT position JNICALL create(position&);
+JNIEXPORT position* JNICALL getPositions(void);
 
-/*
- * Class:     org_jnitest_Registry
- * Method:    update
- * Signature: ()V
- */
+JNIEXPORT int JNICALL getCapacity(void);
+
+JNIEXPORT void JNICALL registerPosition(position&);
+
+JNIEXPORT void JNICALL registerPositions(position pos[], int length);
+
 JNIEXPORT int JNICALL update();
 
 #ifdef __cplusplus

@@ -19,29 +19,57 @@ public class Entt {
             C_FLOAT.withName("y")
     );
 
-    private final MethodHandle init, create, update;
+    private final MethodHandle init, createPos, createBulk, update, printAll, getPositions, getCapasity;
 
     public Entt() {
         SymbolLookup lookup = SymbolLookup.loaderLookup();
-        MemoryAddress initAddr = lookup.lookup("init").get();
+        MemoryAddress address = lookup.lookup("init").get();
         init = CLinker.getInstance().downcallHandle(
-                initAddr,
+                address,
                 MethodType.methodType(void.class),
                 FunctionDescriptor.ofVoid()
         );
 
-        MemoryAddress createAddr = lookup.lookup("create").get();
-        create = CLinker.getInstance().downcallHandle(
-                createAddr,
+        address = lookup.lookup("registerPosition").get();
+        createPos = CLinker.getInstance().downcallHandle(
+                address,
                 MethodType.methodType(void.class, MemoryAddress.class),
                 FunctionDescriptor.ofVoid(C_POINTER)
         );
 
-        MemoryAddress updateAddr = lookup.lookup("update").get();
+        address = lookup.lookup("registerPositions").get();
+        createBulk = CLinker.getInstance().downcallHandle(
+                address,
+                MethodType.methodType(void.class, MemoryAddress.class, int.class),
+                FunctionDescriptor.ofVoid(C_POINTER, C_INT)
+        );
+
+        address = lookup.lookup("update").get();
         update = CLinker.getInstance().downcallHandle(
-                updateAddr,
+                address,
                 MethodType.methodType(int.class),
                 FunctionDescriptor.of(C_INT)
+        );
+
+        address = lookup.lookup("printAllEntities").get();
+        printAll = CLinker.getInstance().downcallHandle(
+                address,
+                MethodType.methodType(void.class),
+                FunctionDescriptor.ofVoid()
+        );
+
+        address = lookup.lookup("getPositions").get();
+        getPositions = CLinker.getInstance().downcallHandle(
+                address,
+                MethodType.methodType(MemoryAddress.class),
+                FunctionDescriptor.of(C_POINTER)
+        );
+
+        address = lookup.lookup("getCapacity").get();
+        getCapasity = CLinker.getInstance().downcallHandle(
+                address,
+                MethodType.methodType(long.class),
+                FunctionDescriptor.of(C_LONG)
         );
     }
 
@@ -53,9 +81,17 @@ public class Entt {
         }
     }
 
-    public void create(MemorySegment segment) {
+    public void registerPosition(MemorySegment segment) {
         try {
-            create.invokeExact(segment.address());
+            createPos.invokeExact(segment.address());
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registerPositions(MemorySegment segment, int length) {
+        try {
+            createBulk.invokeExact(segment.address(), length);
         } catch (Throwable e) {
             e.printStackTrace();
         }
@@ -66,6 +102,34 @@ public class Entt {
             var result = update.invoke();
         } catch (Throwable e) {
             e.printStackTrace();
+        }
+    }
+
+    public void printAll() {
+        try {
+            var result = printAll.invoke();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    public MemoryAddress getPositions(MemoryLayout layout) {
+        MemoryAddress result;
+        try {
+            result = (MemoryAddress) getPositions.invoke();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+        return result;
+    }
+
+    public long getCapasity() {
+        try {
+            return (long)getCapasity.invoke();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return -1;
         }
     }
 }
