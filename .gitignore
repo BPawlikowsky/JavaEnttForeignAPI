@@ -2,3 +2,5 @@
 /build/
 /.idea/
 /.gradle/
+/src/main/cpp/java_entt/build/
+/src/main/cpp/java_entt/.cache/
